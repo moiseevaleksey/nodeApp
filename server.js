@@ -1,19 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const winston = require('winston');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'pug');
 
-// const logger = winston.createLogger({
-//     level: 'info',
-//     format: winston.format.json(),
-//     transports: [
-//         new winston.transports.File({ filename: 'error.log', level: 'error' }),
-//         new winston.transports.File({ filename: 'combined.log' })
-//     ]
-// });
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.json(),
+    transports: [
+        new winston.transports.Console(),
+        new winston.transports.File({ filename: 'combined.log' })
+    ]
+});
 
 let blogs = [
     {id: 1, title: '1st article', text: 'lorem ipsum1'},
@@ -26,23 +27,37 @@ let blogs = [
 ];
 
 app.get('/blogs', (req, res) => {
+    logger.info('All blogs request');
     res.send(blogs);
 })
 
 app.get('/blogs/:id', (req, res) => {
+    logger.info(`Request for blog with ID = ${Number(req.params.id)}`);
+
     const blog = blogs.find(blog => {
         return blog.id === Number(req.params.id)
     });
-    res.send(blog);
+
+    if (blog) {
+        res.send(blog);
+    } else {
+        res.sendStatus(404);  
+    }
 })
 
 app.post('/blogs', (req, res) => {
-    blogs.push({
-        id: Date.now(),
-        title: req.body.title,
-        text: req.body.text
-    });
-    res.sendStatus(200);
+    if (req.body.title & req.body.text) {
+        blogs.push({
+            id: Date.now(),
+            title: req.body.title,
+            text: req.body.text
+        });
+        logger.info(`Blog was successfully posted`);
+        res.sendStatus(200);
+    } else {
+        logger.info(`Post failed`);
+        res.sendStatus(400);
+    }
 })
 
 app.delete('/blogs/:id', (req, res) => {
@@ -65,7 +80,7 @@ app.put('/blogs/:id', (req, res) => {
 })
 
 app.get('/*', function (req, res) {
-    res.render('index', { title: 'Hey', message: 'Error! Wrong route!' })
+    res.render('index', { title: 'Error', message: 'Error!', text: 'Wrong route'})
 })
 
 app.listen(3012, () => {
