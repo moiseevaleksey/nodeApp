@@ -4,6 +4,16 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'pug');
+
+// const logger = winston.createLogger({
+//     level: 'info',
+//     format: winston.format.json(),
+//     transports: [
+//         new winston.transports.File({ filename: 'error.log', level: 'error' }),
+//         new winston.transports.File({ filename: 'combined.log' })
+//     ]
+// });
 
 let blogs = [
     {id: 1, title: '1st article', text: 'lorem ipsum1'},
@@ -35,9 +45,11 @@ app.post('/blogs', (req, res) => {
     res.sendStatus(200);
 })
 
-app.delete('/blogs', (req, res) => {
-    blogs.filter(blog => {
-        blog.id === req.body.id;
+app.delete('/blogs/:id', (req, res) => {
+    console.log(req.params);
+
+    blogs = blogs.filter(blog => {
+        return blog.id !== Number(req.params.id);
     });
     res.sendStatus(200);
 })
@@ -52,6 +64,10 @@ app.put('/blogs/:id', (req, res) => {
     res.sendStatus(200);
 })
 
-app.listen(3012, ()=>{
+app.get('/*', function (req, res) {
+    res.render('index', { title: 'Hey', message: 'Error! Wrong route!' })
+})
+
+app.listen(3012, () => {
     console.log('Server is listening port 3012');
 })
