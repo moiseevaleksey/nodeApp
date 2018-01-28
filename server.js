@@ -1,6 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const winston = require('winston');
+const { BLOGS } = require('./data');
+
+let blogs = BLOGS;
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,18 +19,8 @@ const logger = winston.createLogger({
     ]
 });
 
-let blogs = [
-    {id: 1, title: '1st article', text: 'lorem ipsum1'},
-    {id: 2, title: '2nd article', text: 'lorem ipsum2'},
-    {id: 3, title: '3rd article', text: 'lorem ipsum3'},
-    {id: 4, title: '4th article', text: 'lorem ipsum4'},
-    {id: 5, title: '5th article', text: 'lorem ipsum5'},
-    {id: 6, title: '6th article', text: 'lorem ipsum6'},
-    {id: 7, title: '7th article', text: 'lorem ipsum7'}
-];
-
 app.get('/blogs', (req, res) => {
-    logger.info('All blogs request');
+    logger.info(`All blogs request`);
     res.send(blogs);
 })
 
@@ -55,32 +48,51 @@ app.post('/blogs', (req, res) => {
         logger.info(`Blog was successfully posted`);
         res.sendStatus(200);
     } else {
-        logger.info(`Post failed`);
+        logger.info(`Blog post failed`);
         res.sendStatus(400);
     }
 })
 
 app.delete('/blogs/:id', (req, res) => {
-    console.log(req.params);
-
+    const state = blogs;
     blogs = blogs.filter(blog => {
         return blog.id !== Number(req.params.id);
     });
-    res.sendStatus(200);
+    if (state.length == blogs.length) {
+        logger.info(`Blog with id = ${req.params.id} wasn't found`);
+        res.sendStatus(200);
+    } else {
+        logger.info(`Blog with id = ${req.params.id} was deleted`);
+        res.sendStatus(200);
+    }
 })
 
 app.put('/blogs/:id', (req, res) => {
-    let blog = blogs.find(blog => {
+    const blog = blogs.find(blog => {
         return blog.id === Number(req.params.id)
     });
-    console.log(req.body);
-    blog.title = req.body.title;
-    blog.text  = req.body.text;
-    res.sendStatus(200);
+
+    if (blog) {
+        const { title, text } = req.body;
+        console.log(title, text);
+        if (title) {
+            blog.title = title;
+            logger.info(`Blog with id = ${req.params.id} was updated. New title : ${title}.`);
+        }
+        if (text) {
+            blog.text = text;
+            logger.info(`Blog with id = ${req.params.id} was updated. New text : ${text}.`);
+        }
+        res.sendStatus(200);
+    } else {
+        logger.info(`Blog with id = ${req.params.id} wasn't found.`);
+        res.sendStatus(400);
+    }
 })
 
 app.get('/*', function (req, res) {
-    res.render('index', { title: 'Error', message: 'Error!', text: 'Wrong route'})
+    logger.info(`Request to wrong route`);
+    res.render('index', { title: 'Error page', message: 'Error!', text: 'Wrong route'})
 })
 
 app.listen(3012, () => {
