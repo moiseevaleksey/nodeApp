@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const winston = require('winston');
 const { BLOGS } = require('./data');
+const logger = require('./logger');
 
 let blogs = BLOGS;
 
@@ -9,15 +9,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'pug');
-
-const logger = winston.createLogger({
-    level: 'info',
-    format: winston.format.json(),
-    transports: [
-        new winston.transports.Console(),
-        new winston.transports.File({ filename: 'combined.log' })
-    ]
-});
 
 app.get('/blogs', (req, res) => {
     logger.info(`All blogs request`);
