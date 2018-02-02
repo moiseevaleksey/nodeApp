@@ -8,10 +8,6 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use((err, req, res, next) => {
-  console.log(err.stack);
-  res.status(500).json({error: err.stack});
-});
 app.set('view engine', 'pug');
 routes(app);
 
