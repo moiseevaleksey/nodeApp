@@ -1,4 +1,4 @@
-let blogs = [
+const BLOGS = [
     {id: 1, title: '1st article', text: 'lorem ipsum1'},
     {id: 2, title: '2nd article', text: 'lorem ipsum2'},
     {id: 3, title: '3rd article', text: 'lorem ipsum3'},
@@ -8,4 +8,4 @@ let blogs = [
     {id: 7, title: '7th article', text: 'lorem ipsum7'}
 ];
 
-module.exports = blogs;
+module.exports = BLOGS;
