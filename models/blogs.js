@@ -36,6 +36,12 @@ blogsSchema.statics.updateBlog = function (id, newBlog, cb) {
   });
 };
 
+blogsSchema.statics.deleteBlog = function (id, cb) {
+  Blogs.remove({ _id: id }, (err) => {
+    cb(err);
+});
+};
+
 const Blogs = mongoose.model('Blogs', blogsSchema);
 
 module.exports = Blogs;
