@@ -2,12 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { CONFIG } = require('./data');
-const { Blogs } = require('./models');
+const routes = require('./routes');
 
 const app = express();
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'pug');
+routes(app);
 
 const startServer = () => {
   app.listen(CONFIG.port);
@@ -23,57 +25,3 @@ connectDb()
   .on('error', console.log)
   .on('disconnected', connectDb)
   .once('open', startServer);
-
-app.get('/blogs', (req, res) => {
-  Blogs.getAllBlogs((err, blogs) => {
-    res.send(blogs);
-  });
-});
-
-app.get('/blogs/:id', (req, res) => {
-  const requestedId = req.params.id;
-  Blogs.getBlogById(requestedId, (err, blog) => {
-    if (blog) {
-      res.send(blog);
-    } else {
-      res.sendStatus(404);
-    }
-  });
-});
-
-app.post('/blogs', (req, res) => {
-  const blog = req.body;
-
-  Blogs.createBlog(blog, (err) => {
-    if (err) {
-      res.send(err.message);
-    } else {
-      res.sendStatus(200);
-    }
-  });
-});
-
-app.put('/blogs/:id', (req, res) => {
-  const id = req.params.id;
-  const newBlog = req.body;
-
-  Blogs.updateBlog(id, newBlog, (err) => {
-    if (err) {
-      res.send(err.message);
-    } else {
-      res.sendStatus(200);
-    }
-  });
-});
-
-app.delete('/blogs/:id', (req, res) => {
-  const id = req.params.id;
-
-  Blogs.deleteBlog(id, (err) => {
-    if (err) {
-      res.send(err.message);
-    } else {
-      res.sendStatus(200);
-    }
-  });
-});
