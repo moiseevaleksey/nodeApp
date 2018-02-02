@@ -53,12 +53,25 @@ app.post('/blogs', (req, res) => {
   });
 });
 
-app.delete('/blogs/:id', (req, res) => {
-  const id = req.params.id;
+app.put('/blogs', (req, res) => {
+  const blog = req.body;
 
-  Blogs.deleteBlog(id, (err) => {
+  Blogs.createBlog(blog, (err) => {
     if (err) {
-      res.send(err.message)
+      res.send(err.message);
+    } else {
+      res.sendStatus(200);
+    }
+  });
+});
+
+app.post('/blogs/:id', (req, res) => {
+  const id = req.params.id;
+  const newBlog = req.body;
+
+  Blogs.updateBlog(id,newBlog,  (err) => {
+    if (err) {
+      res.send(err.message);
     } else {
       res.sendStatus(200);
     }

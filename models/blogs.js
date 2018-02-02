@@ -26,10 +26,10 @@ blogsSchema.statics.createBlog = function (blogToSave, cb) {
   })
 };
 
-blogsSchema.statics.deleteBlog = function (id, cb) {
-  Blogs.remove({ _id: id }, function (err) {
-    cb(err);
-  });
+blogsSchema.statics.updateBlog = function (id, newBlog,  cb) {
+  console.log(id);
+  console.log(newBlog);
+  Blogs.update({ _id: id }, { $set: { title: newBlog.title, text: newBlog.text }}, cb);
 };
 
 
