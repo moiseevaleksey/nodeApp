@@ -8,9 +8,11 @@ module.exports = (app) => {
         });
     });
 
-    app.get('/blogs/:id', (req, res) => {
+    app.get('/blogs/:id', (req, res, next) => {
         Blogs.findById(req.params.id, (err, blog) => {
-            console.log(err, blog);
+            if (err) {
+                return next(err);
+            }
             res.json(blog);
         });
     });
@@ -33,5 +35,19 @@ module.exports = (app) => {
         Blogs.remove({ _id: req.params.id }, (err) => {
             (err) ? res.send(err) : res.sendStatus(200);
         });
+    });
+
+    app.use((err, req, res, next) => {
+        const isNotFound = err.message.indexOf('not found');
+        const isCastError = err.message.indexOf('Cast to ObjectId failed');
+
+        if(err.message || (isNotFound && isCastError)) {
+            return next(err);
+        }
+        res.status(500).json({error: err.stack});
+    });
+
+    app.use((err, req, res, next) => {
+        res.sendStatus(404);
     });
 };
