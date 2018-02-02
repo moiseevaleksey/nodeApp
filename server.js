@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { CONFIG } = require('./data');
-const { Users, Blogs } = require('./models');
+const { Blogs } = require('./models');
 
 const app = express();
 app.use(bodyParser.json());
@@ -45,6 +45,18 @@ app.post('/blogs', (req, res) => {
   const blog = req.body;
 
   Blogs.createBlog(blog, (err) => {
+    if (err) {
+      res.send(err.message)
+    } else {
+      res.sendStatus(200);
+    }
+  });
+});
+
+app.delete('/blogs/:id', (req, res) => {
+  const id = req.params.id;
+
+  Blogs.deleteBlog(id, (err) => {
     if (err) {
       res.send(err.message)
     } else {
