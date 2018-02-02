@@ -26,12 +26,15 @@ blogsSchema.statics.createBlog = function (blogToSave, cb) {
   })
 };
 
-blogsSchema.statics.updateBlog = function (id, newBlog,  cb) {
-  console.log(id);
-  console.log(newBlog);
-  Blogs.update({ _id: id }, { $set: { title: newBlog.title, text: newBlog.text }}, cb);
-};
+blogsSchema.statics.updateBlog = function (id, newBlog, cb) {
+  const query = { _id: id };
+  const blog = new Blogs(newBlog);
+  const error = blog.validateSync();
 
+  Blogs.findOneAndUpdate(query, newBlog, { upsert: true }, function (err) {
+    cb(err);
+  });
+};
 
 const Blogs = mongoose.model('Blogs', blogsSchema);
 

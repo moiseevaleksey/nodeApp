@@ -69,7 +69,7 @@ app.post('/blogs/:id', (req, res) => {
   const id = req.params.id;
   const newBlog = req.body;
 
-  Blogs.updateBlog(id,newBlog,  (err) => {
+  Blogs.updateBlog(id, newBlog, (err) => {
     if (err) {
       res.send(err.message);
     } else {
