@@ -1,15 +1,17 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const userSchema = new Schema({
-  name: String,
-  role: String,
+const usersSchema = new Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  role: {
+    type: String,
+    required: true
+  }
 });
 
-// userSchema.statics.findUserByName = function (cb) {
-//   return this.find({}, cb);
-// };
-
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', usersSchema);
 
 module.exports = User;
