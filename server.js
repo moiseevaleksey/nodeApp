@@ -1,27 +1,26 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const { CONFIG } = require('./data');
-const routes = require('./routes');
+const express = require ('express');
+const bodyParser = require ('body-parser');
+const { blogs } = require('./routes');
 
-const app = express();
+const app = express ();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.set('view engine', 'pug');
-routes(app);
+app.use (bodyParser.json ());
+app.use (bodyParser.urlencoded ({extended: true}));
+app.use('/blogs', blogs);
+app.set ('view engine', 'pug');
 
-const startServer = () => {
-  app.listen(CONFIG.port);
-  console.log(`App started on port ${CONFIG.port}`);
-};
+// error handling
+app.use((err, req, res, next) => {
+  const isNotFound = err.message.indexOf('not found');
+  const isCastError = err.message.indexOf('Cast to ObjectId failed');
 
-const connectDb = () => {
-  mongoose.connect('mongodb://localhost:27017/frontcamp');
-  return mongoose.connection;
-};
+  if (err.message || (isNotFound && isCastError)) {
+    return next(err);
+  }
+  res.status(500).json({ error: err.stack });
+});
+app.use((err, req, res, next) => {
+  res.sendStatus(404);
+});
 
-connectDb()
-  .on('error', console.log)
-  .on('disconnected', connectDb)
-  .once('open', startServer);
+module.exports = app;

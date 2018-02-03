@@ -1,7 +1,5 @@
-const BLOGS = require('./data');
-const CONFIG = require('./config');
+const config = require('./config');
 
 module.exports = Object.freeze({
-    BLOGS: BLOGS,
-    CONFIG: CONFIG,
+    config,
 });
