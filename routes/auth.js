@@ -20,9 +20,9 @@ router.get('/reg',
 
 router.post('/reg',
   function (req, res) {
-    console.log(req.body);
-    User.create({ username: req.body.username, password: req.body.password }, function (err, small) {
-      if (err) return console.log(err);
+    User.create({ username: req.body.username, password: req.body.password }, function (err) {
+      console.log(err);
+      if (err) return res.render('registration', { error: err.message });
       res.redirect('/login');
     })
   });
