@@ -1,0 +1,8 @@
+<p>
+Username: <%= user.username %><br/>
+<% if (user.emails) { %>
+Email: <%= user.emails[0].value %><br/>
+<% } %>
+</p>
+<a href="/">To main page</a>
+<a href="/logout">Log out</a>

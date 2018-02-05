@@ -1,6 +1,6 @@
 const app = require('./server');
 const mongoose = require ('mongoose');
-const { config } = require ('./data');
+const { config } = require ('./config');
 
 const startServer = () => {
   app.listen (config.port);

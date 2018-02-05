@@ -1,13 +1,27 @@
-const express = require ('express');
-const bodyParser = require ('body-parser');
-const { blogs } = require('./routes');
+const express = require('express');
+const passport = require('./auth');
+const morgan = require('morgan')('combined');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const expressSessions = require('express-session');
+const { auth, blogs } = require('./routes');
 
-const app = express ();
+const app = express();
 
-app.use (bodyParser.json ());
-app.use (bodyParser.urlencoded ({extended: true}));
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+
+app.use(morgan);
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(expressSessions({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/', auth);
 app.use('/blogs', blogs);
-app.set ('view engine', 'pug');
+
 
 // error handling
 app.use((err, req, res, next) => {

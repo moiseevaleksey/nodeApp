@@ -1,11 +1,14 @@
 const express = require('express');
 const { Blogs } = require('./../models/index');
 const router = express.Router();
+const passport = require('../auth');
 
-router.get('/', (req, res) => {
+router.get('/',
+  require('connect-ensure-login').ensureLoggedIn(),
+  (req, res) => {
   Blogs.find({}, (err, blogs) => {
-    console.log(err, blogs);
-    res.send(blogs);
+    res.render('blogs', { blogs: blogs });
+    // res.send(blogs);
   });
 });
 

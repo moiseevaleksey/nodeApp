@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 
 module.exports = mongoose.model ('User', {
-  username: String,
-  password: String,
-  email: String,
-  gender: String,
-  address: String,
+  username: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
 });
