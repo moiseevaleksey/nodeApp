@@ -9,10 +9,12 @@ const { auth, blogs, apiBlogs } = require('./routes');
 const connectEnsureLogin = require('connect-ensure-login');
 const app = express();
 const { config } = require('./config');
+const cors = require('cors');
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+app.use(cors());
 app.use(morgan);
 app.use(cookieParser());
 app.use(bodyParser.json());
