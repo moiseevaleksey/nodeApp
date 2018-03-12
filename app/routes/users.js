@@ -72,7 +72,7 @@ router.post('/', (req, res, next) => {
     bcrypt.hash(newUser.password, salt, function (err, hash) {
       newUser.password = hash;
       newUser.save()
-        .then(() => res.status(200).json(newUser))
+        .then(() => res.sendStatus(200))
         .catch((err) => next(err))
     });
   });
