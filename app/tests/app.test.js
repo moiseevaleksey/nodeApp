@@ -16,9 +16,9 @@ describe('get blogs', () => {
   it('should post successfully', (done) => {
     request(app).post("/blogs")
       .send({
-        title: 'qwe',
-        author: 'qwe',
-        body: 'qwe',
+        title: 'test',
+        author: 'test',
+        body: 'test',
         date: Date.now()
       })
       .expect(200)

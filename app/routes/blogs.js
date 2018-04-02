@@ -32,8 +32,8 @@ blogRouter.post('/', (req, res, next) => {
   .then(() => res.status(200).send({ message: 'Blog created successfully' }))
   .catch((err) => next(err));
 });
-// I'm using object.assign, which helps to increase performance and reusability of endpoint,
-// by allowing us to send not the full object notation, but only the changed parts.
+
+
 blogRouter.put('/:id', (req, res, next) => {
   const newBlogData = req.body;
   Blog.findById(req.params.id)
